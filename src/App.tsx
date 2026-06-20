@@ -782,6 +782,3 @@ export default function App() {
     </div>
   );
 }
-Done
-
-You are out of free 
