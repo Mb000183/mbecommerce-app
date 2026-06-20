@@ -1,0 +1,7 @@
+{
+  "name": "E-Commerce Omnichannel Management System",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}

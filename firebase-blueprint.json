@@ -1,0 +1,45 @@
+{
+  "entities": {
+    "user": {
+      "title": "User Profile",
+      "description": "User account integration and connection statuses.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "email": { "type": "string" },
+        "stores": { "type": "object" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "stores"]
+    },
+    "product": {
+      "title": "Product",
+      "description": "Store composed catalog item.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "price": { "type": "number" },
+        "image": { "type": "string" },
+        "tags": { "type": "array" },
+        "description": { "type": "string" },
+        "keywords": { "type": "string" },
+        "seoText": { "type": "string" },
+        "stores": { "type": "object" },
+        "ownerId": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "price", "image", "ownerId", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "user",
+      "description": "Top-level user metadata and store sync connection configurations."
+    },
+    "/users/{userId}/products/{productId}": {
+      "schema": "product",
+      "description": "User specific custom-defined products."
+    }
+  }
+}

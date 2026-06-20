@@ -1,0 +1,11 @@
+{
+  "builds": {
+    "android": {
+      "type": "android",
+      "buildType": "debug",
+      "webBuildConfig": {
+        "buildCommand": "npm run build"
+      }
+    }
+  }
+}

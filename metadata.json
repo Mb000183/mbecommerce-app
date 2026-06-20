@@ -1,0 +1,8 @@
+{
+  "name": "E-Commerce Omnichannel Management System",
+  "description": "An ecommerce desktop workspace featuring a Three.js 3D Command Centre, an Express backend, and a real-time responsive omnichannel web console supporting automated Gemini SEO generation, trend scraping, and active multi-store API connections.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

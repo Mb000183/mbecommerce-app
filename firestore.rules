@@ -1,0 +1,68 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 1. Global safety net default deny-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Standard Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // 2. User Collection rules
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      
+      allow create: if isOwner(userId) && 
+                      isValidId(userId) &&
+                      request.resource.data.userId == userId &&
+                      request.resource.data.stores is map &&
+                      request.resource.data.keys().hasAll(['userId', 'stores']) &&
+                      request.resource.data.keys().size() <= 5;
+                      
+      allow update: if isOwner(userId) &&
+                      request.resource.data.userId == userId &&
+                      request.resource.data.stores is map &&
+                      request.resource.data.userId == resource.data.userId;
+                      
+      allow delete: if false;
+
+      // 3. Nested Product Collection rules
+      match /products/{productId} {
+        allow read, list: if isOwner(userId);
+        
+        allow create: if isOwner(userId) &&
+                        isValidId(productId) &&
+                        request.resource.data.id == productId &&
+                        request.resource.data.ownerId == userId &&
+                        request.resource.data.title is string && request.resource.data.title.size() >= 3 && request.resource.data.title.size() <= 250 &&
+                        request.resource.data.price is number && request.resource.data.price >= 0.0 &&
+                        request.resource.data.image is string &&
+                        request.resource.data.keys().hasAll(['id', 'title', 'price', 'image', 'ownerId', 'createdAt']) &&
+                        request.resource.data.keys().size() <= 12;
+
+        allow update: if isOwner(userId) &&
+                        request.resource.data.id == productId &&
+                        request.resource.data.ownerId == userId &&
+                        request.resource.data.title is string && request.resource.data.title.size() >= 3 && request.resource.data.title.size() <= 250 &&
+                        request.resource.data.price is number && request.resource.data.price >= 0.0 &&
+                        request.resource.data.ownerId == resource.data.ownerId &&
+                        request.resource.data.id == resource.data.id &&
+                        request.resource.data.createdAt == resource.data.createdAt;
+
+        allow delete: if isOwner(userId);
+      }
+    }
+  }
+}
